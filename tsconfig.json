@@ -1,11 +1,14 @@
 {
-  "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "target": "ES6",
-    "outDir": "dist",
-    "rootDir": "./",
-    "strict": true
-  },
-  "include": ["./**/*.ts"]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
+    }
+  ]
 }
