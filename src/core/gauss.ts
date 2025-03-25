@@ -1,5 +1,12 @@
+export class InvalidSystemError extends Error {}
+export class UnresolvableSystemError extends Error {}
+
 export class Systeme {
-  constructor(private matrice: number[][]) {}
+  constructor(private matrice: number[][]) {
+    if (matrice.some((ligne) => ligne.length !== matrice.length + 1)) {
+      throw new InvalidSystemError()
+    }
+  }
 
   private get matrice_triangle() {
     const matrice = this.matrice.map((ligne) => ligne.slice())
@@ -40,7 +47,7 @@ export class Systeme {
       }
 
       if (ligne[ligne_i] == 0) {
-        throw new Error('Impossible de résoudre le système')
+        throw new UnresolvableSystemError()
       }
 
       solutions[ligne_i] /= ligne[ligne_i]
