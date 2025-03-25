@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 describe('resoudre', () => {
   it('Résout un système à 2 équations', () => {
     const resultat = resoudre([
-      [1, 1, 2],
-      [1, -1, 0],
+      [2, 2, 4],
+      [2, -2, 0],
     ])
     expect(resultat).toStrictEqual([1, 1])
   })
