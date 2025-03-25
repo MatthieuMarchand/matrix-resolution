@@ -1,13 +1,13 @@
 <template>
   <form class="container" @submit.prevent="resoudre">
     <h2>Nombre d'inconnues :</h2>
-    <input v-model.number="nb_inconnues" type="number" min="2" @change="initialise_matrice_vide" />
+    <input v-model.number="nb_inconnues" type="number" min="2" @input="initialise_matrice_vide" />
 
     <h2>Remplissez les coefficients :</h2>
 
     <table v-if="matrice.length">
       <tr>
-        <th v-for="(varName, index) in variableNames" :key="index">{{ varName }}</th>
+        <th v-for="(nom_var, index) in noms_variables" :key="index">{{ nom_var }}</th>
         <th>Résultat</th>
       </tr>
 
@@ -20,17 +20,26 @@
 
     <button type="submit">Résoudre la matrice</button>
   </form>
+
+  <p v-if="solution_matrice == null">Pas de solution</p>
+  <ul v-else>
+    <li v-for="(solution, index) in solution_matrice" :key="index">
+      {{ noms_variables[index] }} = {{ solution }}
+    </li>
+  </ul>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { Systeme } from './core/gauss'
 
 const nb_inconnues = ref(3)
-const matrice = ref([])
+const matrice = ref<number[][]>([])
+const solution_matrice = ref<number[] | null>([])
 
 // Génération automatique des noms de variables (ex: x, y, z)
-const variableNames = computed(
-  () => Array.from({ length: nb_inconnues.value }, (_, i) => String.fromCharCode(120 + i)), // 120 = 'x'
+const noms_variables = computed(() =>
+  Array.from({ length: nb_inconnues.value }, (_, i) => String.fromCharCode(97 + i)),
 )
 
 const initialise_matrice_vide = () => {
@@ -39,7 +48,13 @@ const initialise_matrice_vide = () => {
     .map(() => Array(nb_inconnues.value + 1).fill(0))
 }
 
-function resoudre() {}
+function resoudre() {
+  try {
+    solution_matrice.value = new Systeme(matrice.value).solutions
+  } catch (erreur) {
+    solution_matrice.value = null
+  }
+}
 
 onMounted(() => {
   initialise_matrice_vide()
