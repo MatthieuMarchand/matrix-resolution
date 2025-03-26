@@ -27,11 +27,11 @@
 </template>
 
 <script setup lang="ts">
+import { SystemeLineaire, SystemeNonResolvableError } from '@/core/systemeLineaire'
 import Matrice from '@/Matrice.vue'
 import VariableName from '@/VariableName.vue'
 import { noms_variables } from '@/variables'
 import { computed, ref } from 'vue'
-import { Systeme } from './core/gauss'
 
 const nb_inconnues = ref(3)
 const matrice = ref<number[][]>([
@@ -52,11 +52,15 @@ const initialise_matrice_vide = () => {
 
 function resoudre() {
   try {
-    const systeme = new Systeme(matrice.value)
+    const systeme = new SystemeLineaire(matrice.value)
     matrice_triangle.value = systeme.matrice_triangle
     solution_matrice.value = systeme.solutions
-  } catch {
-    solution_matrice.value = null
+  } catch (e) {
+    if (e instanceof SystemeNonResolvableError) {
+      solution_matrice.value = null
+    } else {
+      throw e
+    }
   }
 }
 </script>
