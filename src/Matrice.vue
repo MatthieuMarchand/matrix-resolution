@@ -6,7 +6,7 @@
         <span v-if="col_i < ligne.length - 1" :data-disabled="matrice[ligne_i][col_i] == 0">
           <input
             v-if="editable"
-            :value="strValue(matrice[ligne_i][col_i])"
+            :value="strValue(ligne_i, col_i)"
             @input="
               (event) =>
                 event.target &&
@@ -50,10 +50,18 @@ const matrice = defineModel<number[][]>({
   required: true,
 })
 
-const strValue = (number: number) => (number < 0 ? number.toString() : `+${number}`)
+const strValue = (ligne_i: number, col_i: number) => {
+  const number = matrice.value[ligne_i][col_i]
 
-const handleStrValueChange = (strValue: string, ligne_i: number, col_i: number) =>
-  (matrice.value[ligne_i][col_i] = Number.parseFloat(strValue))
+  if (col_i == 0 || number < 0) return number.toString()
+
+  return `+${number}`
+}
+
+const handleStrValueChange = (strValue: string, ligne_i: number, col_i: number) => {
+  const number = Number.parseFloat(strValue)
+  matrice.value[ligne_i][col_i] = Number.isNaN(number) ? 0 : number
+}
 
 const variables = computed(() => noms_variables(matrice.value.length))
 </script>
