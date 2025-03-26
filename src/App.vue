@@ -14,7 +14,7 @@
               :key="`${ligne_i}-${col_i}`"
               :data-disabled="col_i < ligne.length - 1 && matrice[ligne_i][col_i] == 0"
             >
-              <span v-if="col_i == ligne.length - 1">=</span>
+              <span v-if="col_i == ligne.length - 1"> = </span>
               <span v-else-if="col_i > 0">+</span>
               <input v-model.number="matrice[ligne_i][col_i]" />
               <VariableName
@@ -35,6 +35,27 @@
       <li v-for="(solution, index) in solution_matrice" :key="index">
         <VariableName :variable-name="noms_variables[index]" /> = {{ solution }}
       </li>
+
+      <h3>Matrice triangle intermédiare</h3>
+      <ul class="matrice" v-if="matrice_triangle.length">
+        <li v-for="(ligne, ligne_i) in matrice_triangle" :key="ligne_i">
+          <div>
+            <span
+              v-for="(_, col_i) in ligne"
+              :key="`${ligne_i}-${col_i}`"
+              :data-disabled="col_i < ligne.length - 1 && matrice_triangle[ligne_i][col_i] == 0"
+            >
+              <span v-if="col_i == ligne.length - 1"> = </span>
+              <span v-else-if="col_i > 0">+</span>
+              <span>{{ matrice_triangle[ligne_i][col_i] }}</span>
+              <VariableName
+                v-if="col_i < ligne.length - 1 && noms_variables[col_i]"
+                :variable-name="noms_variables[col_i]"
+              />
+            </span>
+          </div>
+        </li>
+      </ul>
     </ul>
   </div>
 </template>
@@ -46,6 +67,7 @@ import { Systeme } from './core/gauss'
 
 const nb_inconnues = ref(3)
 const matrice = ref<number[][]>([])
+const matrice_triangle = ref<number[][]>([])
 const solution_matrice = ref<number[] | null>([])
 
 // Génération automatique des noms de variables (ex: x, y, z)
@@ -66,7 +88,9 @@ const initialise_matrice_vide = () => {
 
 function resoudre() {
   try {
-    solution_matrice.value = new Systeme(matrice.value).solutions
+    const systeme = new Systeme(matrice.value)
+    matrice_triangle.value = systeme.matrice_triangle
+    solution_matrice.value = systeme.solutions
   } catch {
     solution_matrice.value = null
   }
@@ -134,7 +158,7 @@ button {
     span[data-disabled='true'] {
       input,
       span {
-        color: #a3a3a3;
+        opacity: 0.4;
       }
     }
   }
@@ -160,6 +184,10 @@ li {
 
   h2 {
     margin-top: 0;
+  }
+
+  h3 {
+    margin-top: 2rem;
   }
 }
 

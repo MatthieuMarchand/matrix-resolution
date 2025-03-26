@@ -8,7 +8,7 @@ export class Systeme {
     }
   }
 
-  private get matrice_triangle() {
+  get matrice_triangle() {
     const matrice = this.matrice.map((ligne) => ligne.slice())
 
     // Mettre à zéro le coefficient en faisant une combinaison linéaire avec la ligne d'au dessus
