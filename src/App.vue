@@ -62,11 +62,15 @@
 
 <script setup lang="ts">
 import VariableName from '@/VariableName.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Systeme } from './core/gauss'
 
 const nb_inconnues = ref(3)
-const matrice = ref<number[][]>([])
+const matrice = ref<number[][]>([
+  [1, 1, 2, -1],
+  [2, -1, 2, -4],
+  [4, 1, 4, -2],
+])
 const matrice_triangle = ref<number[][]>([])
 const solution_matrice = ref<number[] | null>([])
 
@@ -95,10 +99,6 @@ function resoudre() {
     solution_matrice.value = null
   }
 }
-
-onMounted(() => {
-  initialise_matrice_vide()
-})
 </script>
 
 <style lang="scss">
