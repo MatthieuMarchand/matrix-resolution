@@ -1,36 +1,39 @@
 <template>
-  <form class="container" @submit.prevent="resoudre">
-    <h2>Nombre d'inconnues :</h2>
-    <input v-model.number="nb_inconnues" type="number" min="2" @input="initialise_matrice_vide" />
+  <div class="container">
+    <form @submit.prevent="resoudre">
+      <h2>Nombre d'inconnues</h2>
+      <input v-model.number="nb_inconnues" type="number" min="2" @input="initialise_matrice_vide" />
 
-    <h2>Remplissez les coefficients :</h2>
+      <h2>Équations</h2>
 
-    <table v-if="matrice.length">
-      <tr>
-        <th v-for="(nom_var, index) in noms_variables" :key="index">{{ nom_var }}</th>
-        <th>Résultat</th>
-      </tr>
+      <ul class="matrice" v-if="matrice.length">
+        <li v-for="(ligne, ligne_i) in matrice" :key="ligne_i">
+          <div>
+            <span v-for="(_, col_i) in ligne" :key="col_i">
+              <span v-if="col_i == ligne.length - 1">=</span>
+              <span v-else-if="col_i > 0">+</span>
+              <input v-model.number="matrice[ligne_i][col_i]" />
+              <span v-if="col_i !== ligne.length - 1">{{ noms_variables[col_i] }}</span>
+            </span>
+          </div>
+        </li>
+      </ul>
 
-      <tr v-for="(row, rowIndex) in matrice" :key="rowIndex">
-        <td v-for="(cell, colIndex) in row" :key="colIndex">
-          <input v-model.number="matrice[rowIndex][colIndex]" type="number" />
-        </td>
-      </tr>
-    </table>
+      <button type="submit">Résoudre la matrice</button>
+    </form>
 
-    <button type="submit">Résoudre la matrice</button>
-  </form>
-
-  <p v-if="solution_matrice == null">Pas de solution</p>
-  <ul v-else>
-    <li v-for="(solution, index) in solution_matrice" :key="index">
-      {{ noms_variables[index] }} = {{ solution }}
-    </li>
-  </ul>
+    <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
+    <ul v-else class="solutions">
+      <h2>Solutions</h2>
+      <li v-for="(solution, index) in solution_matrice" :key="index">
+        {{ noms_variables[index] }} = {{ solution }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { Systeme } from './core/gauss'
 
 const nb_inconnues = ref(3)
@@ -51,7 +54,7 @@ const initialise_matrice_vide = () => {
 function resoudre() {
   try {
     solution_matrice.value = new Systeme(matrice.value).solutions
-  } catch (erreur) {
+  } catch {
     solution_matrice.value = null
   }
 }
@@ -61,28 +64,83 @@ onMounted(() => {
 })
 </script>
 
-<style>
+<style lang="scss">
+body {
+  background: #f5f5f5;
+}
+
 .container {
+  font-family: Arial, Helvetica, sans-serif;
   max-width: 600px;
   margin: auto;
-  text-align: center;
+}
+
+form {
+  h2 {
+    margin-top: 3rem;
+  }
 }
 
 input {
-  width: 50px;
-  padding: 5px;
-  text-align: center;
+  background: #fafafa;
+  width: 4ch;
+  padding: 4px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1.2rem;
 }
 
-table {
-  margin: 20px auto;
-  border-collapse: collapse;
+button {
+  background: #171717;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
 
-th,
-td {
-  border: 1px solid black;
-  padding: 8px;
-  text-align: center;
+.matrice {
+  font-size: 1.2rem;
+
+  input {
+    padding: 2px 0px;
+    width: 3ch;
+    min-width: 0;
+    text-align: right;
+  }
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  list-style: none;
+
+  & + li {
+    margin-top: 0.5rem;
+  }
+}
+
+.solutions,
+.no-solutions {
+  margin-top: 3rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+
+  h2 {
+    margin-top: 0;
+  }
+}
+
+.solutions {
+  background: #10b981;
+  color: #ecfdf5;
+}
+
+.no-solutions {
+  background: #ef4444;
+  color: #fef2f2;
 }
 </style>
