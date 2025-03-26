@@ -8,7 +8,7 @@
 
       <h2>Équations</h2>
 
-      <Matrice v-model="matrice" editable />
+      <MatriceLineaire v-model="matrice" editable />
 
       <button type="submit">Chercher les solutions</button>
     </form>
@@ -21,14 +21,14 @@
       </li>
 
       <h3>Matrice triangle intermédiare</h3>
-      <Matrice v-model="matrice_triangle" />
+      <MatriceLineaire v-model="matrice_triangle" />
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import { SystemeLineaire, SystemeNonResolvableError } from '@/core/systemeLineaire'
-import Matrice from '@/Matrice.vue'
+import MatriceLineaire from '@/MatriceLineaire.vue'
 import VariableName from '@/VariableName.vue'
 import { noms_variables } from '@/variables'
 import { computed, ref } from 'vue'
