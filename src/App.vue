@@ -8,25 +8,7 @@
 
       <h2>Équations</h2>
 
-      <ul class="matrice" v-if="matrice.length">
-        <li v-for="(ligne, ligne_i) in matrice" :key="ligne_i">
-          <div>
-            <span
-              v-for="(_, col_i) in ligne"
-              :key="`${ligne_i}-${col_i}`"
-              :data-disabled="col_i < ligne.length - 1 && matrice[ligne_i][col_i] == 0"
-            >
-              <span v-if="col_i == ligne.length - 1"> = </span>
-              <span v-else-if="col_i > 0">+</span>
-              <input v-model.number="matrice[ligne_i][col_i]" />
-              <VariableName
-                v-if="col_i < ligne.length - 1 && noms_variables[col_i]"
-                :variable-name="noms_variables[col_i]"
-              />
-            </span>
-          </div>
-        </li>
-      </ul>
+      <Matrice v-model="matrice" editable />
 
       <button type="submit">Chercher les solutions</button>
     </form>
@@ -35,35 +17,19 @@
     <ul v-else-if="solution_matrice.length" class="solutions">
       <h2>Solutions</h2>
       <li v-for="(solution, index) in solution_matrice" :key="index">
-        <VariableName :variable-name="noms_variables[index]" /> = {{ solution }}
+        <VariableName :variable-name="variables[index]" /> = {{ solution }}
       </li>
 
       <h3>Matrice triangle intermédiare</h3>
-      <ul class="matrice" v-if="matrice_triangle.length">
-        <li v-for="(ligne, ligne_i) in matrice_triangle" :key="ligne_i">
-          <div>
-            <span
-              v-for="(_, col_i) in ligne"
-              :key="`${ligne_i}-${col_i}`"
-              :data-disabled="col_i < ligne.length - 1 && matrice_triangle[ligne_i][col_i] == 0"
-            >
-              <span v-if="col_i == ligne.length - 1"> = </span>
-              <span v-else-if="col_i > 0">+</span>
-              <span>{{ matrice_triangle[ligne_i][col_i] }}</span>
-              <VariableName
-                v-if="col_i < ligne.length - 1 && noms_variables[col_i]"
-                :variable-name="noms_variables[col_i]"
-              />
-            </span>
-          </div>
-        </li>
-      </ul>
+      <Matrice v-model="matrice_triangle" />
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
+import Matrice from '@/Matrice.vue'
 import VariableName from '@/VariableName.vue'
+import { noms_variables } from '@/variables'
 import { computed, ref } from 'vue'
 import { Systeme } from './core/gauss'
 
@@ -76,15 +42,7 @@ const matrice = ref<number[][]>([
 const matrice_triangle = ref<number[][]>([])
 const solution_matrice = ref<number[] | null>([])
 
-// Génération automatique des noms de variables (ex: x, y, z)
-const ASCII_A = 97
-const NB_LETTRES = 26
-const noms_variables = computed(() =>
-  Array.from({ length: nb_inconnues.value }, (_, i) => ({
-    letter: String.fromCharCode(ASCII_A + (i % NB_LETTRES)),
-    index: Math.floor(i / NB_LETTRES),
-  })),
-)
+const variables = computed(() => noms_variables(matrice.value.length))
 
 const initialise_matrice_vide = () => {
   matrice.value = Array(nb_inconnues.value)
@@ -139,45 +97,6 @@ button {
   border: none;
   color: white;
   cursor: pointer;
-}
-
-.matrice {
-  font-size: 1.2rem;
-  overflow: auto;
-
-  input {
-    padding: 2px 0px;
-    width: 3ch;
-    min-width: 0;
-    text-align: right;
-  }
-
-  li {
-    white-space: nowrap;
-
-    & + li {
-      margin-top: 1rem;
-    }
-
-    span[data-disabled='true'] {
-      input,
-      span {
-        opacity: 0.4;
-      }
-    }
-  }
-}
-
-ul {
-  padding: 0;
-}
-
-li {
-  list-style: none;
-
-  & + li {
-    margin-top: 0.5rem;
-  }
 }
 
 .solutions,
