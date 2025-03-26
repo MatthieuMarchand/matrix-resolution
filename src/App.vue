@@ -102,12 +102,21 @@ button {
 
 .matrice {
   font-size: 1.2rem;
+  overflow: auto;
 
   input {
     padding: 2px 0px;
     width: 3ch;
     min-width: 0;
     text-align: right;
+  }
+
+  li {
+    white-space: nowrap;
+
+    & + li {
+      margin-top: 1rem;
+    }
   }
 }
 
