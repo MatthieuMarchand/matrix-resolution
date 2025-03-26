@@ -1,28 +1,45 @@
 <template>
   <div class="container">
-    <form @submit.prevent="resoudre">
-      <h1>Solveur de systèmes linéaires</h1>
+    <main>
+      <form @submit.prevent="resoudre">
+        <h1>Solveur de systèmes linéaires</h1>
 
-      <h2>Nombre d'inconnues</h2>
-      <input v-model.number="nb_inconnues" type="number" min="2" @input="initialise_matrice_vide" />
+        <h2>Nombre d'inconnues</h2>
+        <input
+          v-model.number="nb_inconnues"
+          type="number"
+          min="2"
+          @input="initialise_matrice_vide"
+        />
 
-      <h2>Équations</h2>
+        <h2>Équations</h2>
 
-      <MatriceLineaire v-model="matrice" editable />
+        <MatriceLineaire v-model="matrice" editable />
 
-      <button type="submit">Chercher les solutions</button>
-    </form>
+        <button type="submit">Chercher les solutions</button>
+      </form>
 
-    <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
-    <ul v-else-if="solution_matrice.length" class="solutions">
-      <h2>Solutions</h2>
-      <li v-for="(solution, index) in solution_matrice" :key="index">
-        <VariableName :variable-name="variables[index]" /> = {{ solution }}
-      </li>
+      <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
+      <ul v-else-if="solution_matrice.length" class="solutions">
+        <h2>Solutions</h2>
+        <li v-for="(solution, index) in solution_matrice" :key="index">
+          <VariableName :variable-name="variables[index]" /> = {{ solution }}
+        </li>
 
-      <h3>Matrice triangle intermédiare</h3>
-      <MatriceLineaire v-model="matrice_triangle" />
-    </ul>
+        <h3>Matrice triangle intermédiare</h3>
+        <MatriceLineaire v-model="matrice_triangle" />
+      </ul>
+    </main>
+
+    <footer>
+      <p>
+        Par <a href="https://matthieumarchand.fr">Matthieu Marchand</a> et
+        <a href="https://arthaudproust.fr">Arthaud Proust</a>
+      </p>
+      <p>
+        <a href="https://github.com/MatthieuMarchand/matrix-resolution">Code source</a>
+      </p>
+    </footer>
   </div>
 </template>
 
@@ -67,14 +84,21 @@ function resoudre() {
 
 <style lang="scss">
 body {
+  padding: 0;
+  margin: 0;
   background: #f5f5f5;
+}
+
+main {
+  min-height: 100vh;
+  padding: 2rem 0;
+  box-sizing: border-box;
 }
 
 .container {
   font-family: Arial, Helvetica, sans-serif;
   max-width: 600px;
   margin: auto;
-  padding: 4rem 0;
 }
 
 form {
@@ -84,7 +108,7 @@ form {
 }
 
 input {
-  background: #fafafa;
+  background: white;
   width: 4ch;
   padding: 4px;
   border-radius: 4px;
@@ -126,5 +150,10 @@ button {
 .no-solutions {
   background: #ef4444;
   color: #fef2f2;
+}
+
+footer {
+  padding-top: 4rem;
+  padding-bottom: 1rem;
 }
 </style>
