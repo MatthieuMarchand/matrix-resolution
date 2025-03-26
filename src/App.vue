@@ -9,12 +9,16 @@
       <ul class="matrice" v-if="matrice.length">
         <li v-for="(ligne, ligne_i) in matrice" :key="ligne_i">
           <div>
-            <span v-for="(_, col_i) in ligne" :key="`${ligne_i}-${col_i}`">
+            <span
+              v-for="(_, col_i) in ligne"
+              :key="`${ligne_i}-${col_i}`"
+              :data-disabled="col_i < ligne.length - 1 && matrice[ligne_i][col_i] == 0"
+            >
               <span v-if="col_i == ligne.length - 1">=</span>
               <span v-else-if="col_i > 0">+</span>
               <input v-model.number="matrice[ligne_i][col_i]" />
               <VariableName
-                v-if="col_i !== ligne.length - 1 && noms_variables[col_i]"
+                v-if="col_i < ligne.length - 1 && noms_variables[col_i]"
                 :variable-name="noms_variables[col_i]"
               />
             </span>
@@ -57,7 +61,7 @@ const noms_variables = computed(() =>
 const initialise_matrice_vide = () => {
   matrice.value = Array(nb_inconnues.value)
     .fill(null)
-    .map(() => Array(nb_inconnues.value + 1).fill(0))
+    .map(() => Array(nb_inconnues.value + 1).fill(1))
 }
 
 function resoudre() {
@@ -125,6 +129,13 @@ button {
 
     & + li {
       margin-top: 1rem;
+    }
+
+    span[data-disabled='true'] {
+      input,
+      span {
+        color: #a3a3a3;
+      }
     }
   }
 }
