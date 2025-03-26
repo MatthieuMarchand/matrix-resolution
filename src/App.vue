@@ -1,6 +1,8 @@
 <template>
   <div class="container">
     <form @submit.prevent="resoudre">
+      <h1>Solveur de systèmes linéaires</h1>
+
       <h2>Nombre d'inconnues</h2>
       <input v-model.number="nb_inconnues" type="number" min="2" @input="initialise_matrice_vide" />
 
@@ -26,7 +28,7 @@
         </li>
       </ul>
 
-      <button type="submit">Résoudre la matrice</button>
+      <button type="submit">Chercher les solutions</button>
     </form>
 
     <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
@@ -110,6 +112,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   max-width: 600px;
   margin: auto;
+  padding: 4rem 0;
 }
 
 form {
@@ -128,6 +131,7 @@ input {
 }
 
 button {
+  margin-top: 2rem;
   background: #171717;
   padding: 0.5rem 1rem;
   border-radius: 6px;
