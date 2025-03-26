@@ -9,11 +9,14 @@
       <ul class="matrice" v-if="matrice.length">
         <li v-for="(ligne, ligne_i) in matrice" :key="ligne_i">
           <div>
-            <span v-for="(_, col_i) in ligne" :key="col_i">
+            <span v-for="(_, col_i) in ligne" :key="`${ligne_i}-${col_i}`">
               <span v-if="col_i == ligne.length - 1">=</span>
               <span v-else-if="col_i > 0">+</span>
               <input v-model.number="matrice[ligne_i][col_i]" />
-              <span v-if="col_i !== ligne.length - 1">{{ noms_variables[col_i] }}</span>
+              <VariableName
+                v-if="col_i !== ligne.length - 1 && noms_variables[col_i]"
+                :variable-name="noms_variables[col_i]"
+              />
             </span>
           </div>
         </li>
@@ -23,16 +26,17 @@
     </form>
 
     <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
-    <ul v-else class="solutions">
+    <ul v-else-if="solution_matrice.length" class="solutions">
       <h2>Solutions</h2>
       <li v-for="(solution, index) in solution_matrice" :key="index">
-        {{ noms_variables[index] }} = {{ solution }}
+        <VariableName :variable-name="noms_variables[index]" /> = {{ solution }}
       </li>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
+import VariableName from '@/VariableName.vue'
 import { computed, onMounted, ref } from 'vue'
 import { Systeme } from './core/gauss'
 
@@ -41,8 +45,13 @@ const matrice = ref<number[][]>([])
 const solution_matrice = ref<number[] | null>([])
 
 // Génération automatique des noms de variables (ex: x, y, z)
+const ASCII_A = 97
+const NB_LETTRES = 26
 const noms_variables = computed(() =>
-  Array.from({ length: nb_inconnues.value }, (_, i) => String.fromCharCode(97 + i)),
+  Array.from({ length: nb_inconnues.value }, (_, i) => ({
+    letter: String.fromCharCode(ASCII_A + (i % NB_LETTRES)),
+    index: Math.floor(i / NB_LETTRES),
+  })),
 )
 
 const initialise_matrice_vide = () => {
