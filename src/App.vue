@@ -19,17 +19,22 @@
         <button type="submit">Chercher les solutions</button>
       </form>
 
-      <p class="no-solutions" v-if="solution_matrice == null">Pas de solution</p>
-      <ul v-else-if="solution_matrice.length" class="solutions">
+      <div class="no-solutions" v-if="solution_matrice == null">
+        <h2>Pas de solutions</h2>
+        Nous n'avons pas trouvé de solution unique pour ce système
+      </div>
+      <div v-else-if="solution_matrice.length" class="solutions">
         <h2>Solutions</h2>
-        <li v-for="(solution, index) in solution_matrice" :key="index">
-          <VariableName :variable-name="variables[index]" /> =
-          {{ Math.round(solution * 100) / 100 }}
-        </li>
+        <ul>
+          <li v-for="(solution, index) in solution_matrice" :key="index">
+            <VariableName :variable-name="variables[index]" /> =
+            {{ Math.round(solution * 100) / 100 }}
+          </li>
+        </ul>
 
         <h3>Matrice triangle intermédiare</h3>
         <MatriceLineaire v-model="matrice_triangle" />
-      </ul>
+      </div>
     </main>
 
     <footer>
