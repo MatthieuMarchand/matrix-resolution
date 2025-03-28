@@ -23,7 +23,8 @@
       <ul v-else-if="solution_matrice.length" class="solutions">
         <h2>Solutions</h2>
         <li v-for="(solution, index) in solution_matrice" :key="index">
-          <VariableName :variable-name="variables[index]" /> = {{ solution }}
+          <VariableName :variable-name="variables[index]" /> =
+          {{ Math.round(solution * 100) / 100 }}
         </li>
 
         <h3>Matrice triangle intermédiare</h3>
