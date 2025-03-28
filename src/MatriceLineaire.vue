@@ -19,9 +19,7 @@
           <template v-else>
             <span v-if="col_i > 0">{{ matrice[ligne_i][col_i] > 0 ? '+' : '-' }}</span>
 
-            <span v-else-if="Math.abs(matrice[ligne_i][col_i]) !== 1">{{
-              Math.abs(matrice[ligne_i][col_i])
-            }}</span>
+            <span>{{ Math.abs(matrice[ligne_i][col_i]) }}</span>
           </template>
 
           <VariableName v-if="variables[col_i]" :variable-name="variables[col_i]" />
