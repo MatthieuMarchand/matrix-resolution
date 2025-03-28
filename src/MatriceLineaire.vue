@@ -19,7 +19,7 @@
           <template v-else>
             <span v-if="col_i > 0">{{ matrice[ligne_i][col_i] > 0 ? '+' : '-' }}</span>
 
-            <span>{{ Math.abs(matrice[ligne_i][col_i]) }}</span>
+            <span>{{ Math.round(Math.abs(matrice[ligne_i][col_i]) * 100) / 100 }}</span>
           </template>
 
           <VariableName v-if="variables[col_i]" :variable-name="variables[col_i]" />
@@ -30,7 +30,7 @@
           <span> = </span>
 
           <input v-if="editable" v-model.number="matrice[ligne_i][col_i]" />
-          <span v-else>{{ matrice[ligne_i][col_i] }}</span>
+          <span v-else>{{ Math.round(matrice[ligne_i][col_i] * 100) / 100 }}</span>
         </template>
       </template>
     </li>
