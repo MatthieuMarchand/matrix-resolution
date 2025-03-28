@@ -8,38 +8,14 @@ export class SystemeLineaire {
    * @param matrice Liste d'équations du système sous la forme coefficients puis résultat.
    * Ex: 2x+3y+4z = 5; 3x+4y+5z = 6 => [[2, 3, 4, 5], [3, 4, 5, 6]]
    */
+
+  // vérifier si c'est une matrice résolvable
   constructor(private matrice: number[][]) {
     if (matrice.some((ligne) => ligne.length !== matrice.length + 1)) {
       throw new SystemeInvalideError(
         'Il doit y avoir autant de lignes que de variables. Chaque ligne doit comporter les coefficients des variables puis le résultat',
       )
     }
-  }
-
-  get matrice_triangle() {
-    // Copie de la matrice pour ne pas modifier l'original
-    const matrice = this.matrice.map((ligne) => ligne.slice())
-
-    // Fonction pour mettre à zéro le coefficient en faisant une combinaison linéaire avec la ligne d'au dessus
-    const mettre_a_zero = (systeme: Array<Array<number>>, ligne: number, colonne: number) => {
-      const coef = 1 / (systeme[colonne][colonne] / systeme[ligne][colonne])
-
-      for (let i = 0; i < systeme[ligne].length; i++) {
-        systeme[ligne][i] -= systeme[colonne][i] * coef
-      }
-
-      return systeme
-    }
-
-    // Création de la matrice triangulaire supérieure
-    // en mettant à 0 les coefficiants du triangle bas gauche
-    for (let ligne = 1; ligne < matrice.length; ligne++) {
-      for (let colonne = 0; colonne < ligne; colonne++) {
-        mettre_a_zero(matrice, ligne, colonne)
-      }
-    }
-
-    return matrice
   }
 
   get solutions() {
@@ -67,5 +43,31 @@ export class SystemeLineaire {
     }
 
     return solutions
+  }
+
+  get matrice_triangle() {
+    // Copie de la matrice pour ne pas modifier l'original
+    const matrice = this.matrice.map((ligne) => ligne.slice())
+
+    // Fonction pour mettre à zéro le coefficient en faisant une combinaison linéaire avec la ligne d'au dessus
+    const mettre_a_zero = (systeme: Array<Array<number>>, ligne: number, colonne: number) => {
+      const coef = systeme[ligne][colonne] / systeme[colonne][colonne]
+
+      for (let i = 0; i < systeme[ligne].length; i++) {
+        systeme[ligne][i] -= systeme[colonne][i] * coef
+      }
+
+      return systeme
+    }
+
+    // Création de la matrice triangulaire supérieure
+    // en mettant à 0 les coefficiants du triangle bas gauche
+    for (let ligne = 1; ligne < matrice.length; ligne++) {
+      for (let colonne = 0; colonne < ligne; colonne++) {
+        mettre_a_zero(matrice, ligne, colonne)
+      }
+    }
+
+    return matrice
   }
 }
